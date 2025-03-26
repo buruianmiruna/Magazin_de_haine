@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Magazin_de_haine
@@ -14,15 +15,16 @@ namespace Magazin_de_haine
         {
             string numeFisierClienti = ConfigurationManager.AppSettings["NumeFisierClienti"];
             string numeFisierProduse = ConfigurationManager.AppSettings["NumeFisierProduse"];
-            AdministrareClienti_FisierText adminClienti = new AdministrareClienti_FisierText(numeFisierClienti);
-            AdministrareCosCumparaturi_FisierText adminProduse = new AdministrareCosCumparaturi_FisierText(numeFisierProduse);
-            Client clientNou = new Client();
+            AdministrareClienti_FisierText administrareClienti = new AdministrareClienti_FisierText(numeFisierClienti);
+            AdministrareCosCumparaturi_FisierText administrareProduse = new AdministrareCosCumparaturi_FisierText(numeFisierProduse);
+            Client clientCurent = new Client();
             int nrClienti = 0;
             string optiune;
+
             do
             {
                 Console.WriteLine("C. Citire informatii client de la tastatura");
-                Console.WriteLine("I. Afisarea informatiilor despre ultimului client introdus");
+                Console.WriteLine("I. Afisarea informatiilor despre ultimul client introdus");
                 Console.WriteLine("A. Afisare clienti din fisier");
                 Console.WriteLine("S. Salvare client in fisier");
                 Console.WriteLine("M. Meniu client");
@@ -34,24 +36,24 @@ namespace Magazin_de_haine
                 switch (optiune.ToUpper())
                 {
                     case "C":
-                        clientNou = new Client(++nrClienti,"nume", "prenume","0787878787",12,12,1212);
-                        //clientNou = CitireClientTastatura();
+                        //clientCurent = new Client(++nrClienti,"nume", "prenume","0787878787",12,12,1212);
+                        clientCurent = CitireClientTastatura();
                         break;
                     case "I":
-                        AfisareClient(clientNou);
+                        AfisareClient(clientCurent);
                         break;
                     case "A":
-                        Client[] clienti = adminClienti.GetClienti(out nrClienti);
+                        Client[] clienti = administrareClienti.GetClienti(out nrClienti);
                         AfisareClienti(clienti, nrClienti);
                         break;
                     case "S":
                         int idClient = ++nrClienti;
-                        clientNou.IdClient = idClient;
+                        clientCurent.IdClient = idClient;
                         //adaugare client in fisier
-                        adminClienti.AddClient(clientNou);
+                        administrareClienti.AddClient(clientCurent);
                         break;
                     case "M":
-                        MeniuClient(clientNou);
+                        MeniuClient(clientCurent);
                         break;
                     case "X":
                         return;
@@ -78,6 +80,8 @@ namespace Magazin_de_haine
             int[] data_nasterii = new int[3];
 
             Console.WriteLine("Introduceti ziua de nastere");
+            
+            
             data_nasterii[0] = Convert.ToInt32(Console.ReadLine());
 
             Console.WriteLine("Introduceti luna de nastere");
@@ -88,12 +92,14 @@ namespace Magazin_de_haine
 
             Client client = new Client(0, nume, prenume, nr_telefon, data_nasterii[0], data_nasterii[1], data_nasterii[2]);
 
+            
+
             return client;
         }
 
         public static void AfisareClient(Client client)
         {
-            string dataNasterii = string.Join("/", client.GetData_nasterii());
+            string dataNasterii = string.Join("/", client.GetData_nasterii());//metoda string.Join pentru a formata data nașterii (zi/lună/an).
             string infoClient = string.Format("Clientul cu id-ul #{0} are numele: {1} {2}, numar de telefon: {3}, data nasterii: {4}",
                     client.IdClient,
                     client.nume ?? " NECUNOSCUT ",
@@ -103,6 +109,9 @@ namespace Magazin_de_haine
 
             Console.WriteLine(infoClient);
         }
+        //Afișează toți clienții dintr-un array (Client[] clienti) pe care îl primește ca parametru.
+       /// Parcurge lista de clienți și pentru fiecare client apelează metoda Info()
+       /// (presupunând că această metodă există în clasa Client), care returnează informațiile clientului.
 
         public static void AfisareClienti(Client[] clienti, int nrClienti)
         {
@@ -116,7 +125,7 @@ namespace Magazin_de_haine
 
         public static void MeniuClient(Client client)
         {
-            Client clientNou = new Client(client);
+            Client clientCurent = new Client(client);
             CosCumparaturi cos = new CosCumparaturi(10);
             int idProdus = 0;
             string optiune;
@@ -127,6 +136,7 @@ namespace Magazin_de_haine
                 Console.WriteLine("2. Afiseaza cosul");
                 Console.WriteLine("3. Cauta produs in cos");
                 Console.WriteLine("4. Inapoi la meniul principal");
+
 
                 Console.WriteLine("Alegeti o optiune");
                 optiune = Console.ReadLine();
@@ -156,7 +166,7 @@ namespace Magazin_de_haine
                         break;
 
                     case "2":
-                        Console.WriteLine($"Cosul de cumparaturi al clientului: {clientNou.nume + " " + clientNou.prenume}");
+                        Console.WriteLine($"Cosul de cumparaturi al clientului: {clientCurent.nume + " " + clientCurent.prenume}");
                         cos.AfiseazaCos();
                         break;
                     case "3":

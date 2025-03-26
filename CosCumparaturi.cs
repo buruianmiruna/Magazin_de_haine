@@ -65,7 +65,7 @@ namespace Magazin_de_haine
 
         public void CautaProdus(string numeCautat)
         {
-            var produsGasit = produse.FirstOrDefault(a => a.Info().Contains(numeCautat));
+            var produsGasit = produse.FirstOrDefault(produs => produs.Info().Contains(numeCautat));
             if (produsGasit != null)
             {
                 Console.WriteLine($"Produsul '{numeCautat}' a fost gasit in cos: {produsGasit}");

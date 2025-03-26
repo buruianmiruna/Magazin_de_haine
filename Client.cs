@@ -111,7 +111,7 @@ namespace Magazin_de_haine
             }
             else
             {
-                data_nasterii = new int[0]; // or handle the case where the date is missing
+                data_nasterii = new int[0]; 
             }
         }
 
@@ -121,7 +121,7 @@ namespace Magazin_de_haine
                 SEPARATOR_PRINCIPAL_FISIER,
                 SEPARATOR_SECUNDAR_FISIER,
                 IdClient,
-                (nume ?? " NECUNOSCUT "),
+                (nume ?? " NECUNOSCUT "), //Utilizarea ?? este pentru a verifica dacă un câmp este null și, dacă este, să afișeze "NECUNOSCUT".
                 (prenume ?? " NECUNOSCUT "),
                 nr_telefon,
                 String.Join("/", data_nasterii));
